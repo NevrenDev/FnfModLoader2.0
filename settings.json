@@ -1,0 +1,40 @@
+{
+    "file_ver": "2.0-beta",
+    "default": {
+        "engine": "engine",
+        "engine_exe": "engine/PsychEngine.exe",
+        "engine_mods": "engine/mods",
+        "icon": "Default",
+        "theme": "Dark",
+        "mods": "mods",
+        "lang": "EN",
+        "time": "%d-%m-%Y"
+    },
+    "current": {
+        "engine": "engine",
+        "engine_exe": "engine/PsychEngine.exe",
+        "engine_mods": "engine/mods",
+        "icon": "Default",
+        "theme": "Dark",
+        "mods": "mods",
+        "lang": "EN",
+        "time": "%d-%m-%Y"
+    },
+    "themes": {
+        "Dark": [
+            "#2b2b2b",
+            "#3c3c3c",
+            "white"
+        ],
+        "Light": [
+            "#dbdbdb",
+            "#f5f5f5",
+            "black"
+        ]
+    },
+    "icons": {
+        "Default": "assets/icon.ico",
+        "Legacy": "assets/legacy_icon.ico"
+    },
+    "ver": "Ver 2.0-beta"
+}
