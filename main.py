@@ -14,13 +14,13 @@ import sys
 import os, subprocess, shutil, json, configparser, time
 from PyQt6.QtWidgets import QSizePolicy, QApplication, QMainWindow, QVBoxLayout, QHBoxLayout, QWidget, QPushButton, QLabel, QListWidget, QListWidgetItem, QLineEdit, QMessageBox, QComboBox, QStackedWidget, QSpacerItem
 from PyQt6.QtGui import QIcon, QPixmap
-from PyQt6.QtCore import Qt, QSize, QThread, pyqtSignal, QUrl
+from PyQt6.QtCore import Qt, QSize, QThread, pyqtSignal
 from configparser import NoOptionError
 import fileparser as fp
 
 # load mods
 class ModLoaderThread(QThread):
-    mod_loaded = pyqtSignal(dict)  # Emituje listę modów
+    mod_loaded = pyqtSignal(dict)
 
     def run(self):
         mods_path = settings["current"]["mods"]
@@ -30,7 +30,7 @@ class ModLoaderThread(QThread):
             os.mkdir(mods_path)
             return
 
-        mods_list = []  # Lista do przechowywania danych modów
+        mods_list = []
 
         for folder_name in os.listdir(mods_path):
             folder_path = os.path.join(mods_path, folder_name)
