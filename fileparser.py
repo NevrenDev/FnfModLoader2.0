@@ -1,7 +1,7 @@
 import json, os
 
 settingsc = {
-    "file_ver": "2.0-beta",
+    "file_ver": "2.0.1-beta",
     "default": {
         "engine": "engine",
         "engine_exe": "engine/PsychEngine.exe",
@@ -42,7 +42,7 @@ settingsc = {
 }
 
 langc = {
-    "file_ver": "2.0-beta",
+    "file_ver": "2.0.1-beta",
     "EN": {
         "mod": {
             "run": "Run",
@@ -56,6 +56,10 @@ langc = {
             "link": "Gamebanana/Gamejolt link",
             "save": "Save changes",
             "newb": "Uncheck recently added",
+            "fav": [
+                "Add to favourites",
+                "Remove from favourites"
+                ],
             "sf": {
                 "war": [
                     "No mod name",
@@ -128,6 +132,10 @@ langc = {
             "link": "Link do Gamebanana/Gamejolt",
             "save": "Zapisz zmiany",
             "newb": "Odznacz ostatnio dodany",
+            "fav": [
+                "Dodaj do ulubionych",
+                "Usuń z ulubionych"
+                ],
             "sf": {
                 "war": [
                     "Brak nazwy moda",
@@ -189,7 +197,7 @@ langc = {
     }
 }
 
-current_version = '2.0-beta'
+current_version = '2.0.1-beta'
 
 def settings(file):
     if os.path.exists(file):

@@ -11,15 +11,16 @@
 # |-------------------------------------------------------------------------------------------|
 
 import sys
-import os, subprocess, shutil, json, configparser, time, ast
+import os, subprocess, shutil, json, configparser, time
 from PyQt6.QtWidgets import QSizePolicy, QApplication, QMainWindow, QVBoxLayout, QHBoxLayout, QWidget, QPushButton, QLabel, QListWidget, QListWidgetItem, QLineEdit, QMessageBox, QComboBox, QStackedWidget, QSpacerItem
 from PyQt6.QtGui import QIcon, QPixmap
-from PyQt6.QtCore import Qt, QSize, QThread, pyqtSignal
+from PyQt6.QtCore import Qt, QSize, QThread, pyqtSignal, QUrl
+from configparser import NoOptionError
 import fileparser as fp
 
 # load mods
 class ModLoaderThread(QThread):
-    mod_loaded = pyqtSignal(dict)
+    mod_loaded = pyqtSignal(dict)  # Emituje listę modów
 
     def run(self):
         mods_path = settings["current"]["mods"]
@@ -29,13 +30,15 @@ class ModLoaderThread(QThread):
             os.mkdir(mods_path)
             return
 
+        mods_list = []  # Lista do przechowywania danych modów
+
         for folder_name in os.listdir(mods_path):
             folder_path = os.path.join(mods_path, folder_name)
             
             correct_folder = False
 
             if os.path.isdir(folder_path) and os.listdir(folder_path):
-                while correct_folder is False:
+                while not correct_folder:
                     folder_path, correct_folder = self.check_folders(folder_path)
                 
                 mod_ini_path = os.path.join(folder_path, ".mod.ini")
@@ -52,22 +55,37 @@ class ModLoaderThread(QThread):
                         'mod_link': "None",
                         'new': 'True',
                         'launched': '0',
-                        'last_played': "None"
+                        'last_played': "None",
+                        'fav': 'False'
                     }
                     with open(mod_ini_path, 'w') as configfile:
                         config.write(configfile)
 
                 config = configparser.ConfigParser()
                 config.read(mod_ini_path)
+                
+                try:
+                    fav = config.getboolean("ModData", 'fav')
+                except NoOptionError:
+                    config.set("ModData", "fav", 'False')
+                    with open(mod_ini_path, 'w') as file:
+                        config.write(file)
+                    fav = False
 
                 # mod data, important to properly show mod
                 mod_data = {
                     'mod_name': config.get('ModData', 'mod_name', fallback=folder_name),
                     'icon_file': config.get('ModData', 'icon', fallback='None'),
                     'folder_path': folder_path,
-                    'new': config.getboolean('ModData', 'new', fallback=True)
+                    'new': config.getboolean('ModData', 'new', fallback=True),
+                    'fav': fav
                 }
-                self.mod_loaded.emit(mod_data)
+                mods_list.append(mod_data)
+
+        mods_list.sort(key=lambda x: x['fav'], reverse=True)
+
+        for md in mods_list:
+            self.mod_loaded.emit(md)
 
     # finds .exe and .ico files in the mod folder
     def find_file_in_folder(self, folder_path, extension):
@@ -175,11 +193,13 @@ class ModWidget(QWidget):
         
         self.button_layout = QHBoxLayout()
         save_btn = MainWindow.create_button(self, "assets/save.svg", self.lang["save"], self.save)
-        self.run_btn = MainWindow.create_button(self, "assets/run.svg", self.lang["run"], self.run)
         self.new_btn = MainWindow.create_button(self, "assets/new.svg", self.lang["newb"], self.uncheck)
+        self.run_btn = MainWindow.create_button(self, "assets/run.svg", self.lang["run"], self.run)
+        self.fav_btn = MainWindow.create_button(self, "assets/nfav.svg", self.lang["fav"][0], self.fav_toggle)
         self.button_layout.addWidget(save_btn)
         self.button_layout.addWidget(self.new_btn)
         self.button_layout.addWidget(self.run_btn)
+        self.button_layout.addWidget(self.fav_btn)
         layout.addLayout(self.button_layout)
         
         layout.addItem(QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding))
@@ -196,6 +216,14 @@ class ModWidget(QWidget):
         icon = self.config.get("ModData", "icon")
         launched = self.config.getint("ModData", "launched")
         last = self.config.get("ModData", "last_played")
+        fav = self.config.getboolean("ModData", "fav")
+        
+        if fav:
+            self.fav_btn.setIcon(QIcon("assets/fav.svg"))
+            self.fav_btn.setToolTip(self.lang["fav"][1])
+        else:
+            self.fav_btn.setIcon(QIcon("assets/nfav.svg"))
+            self.fav_btn.setToolTip(self.lang["fav"][0])
         
         self.mod_name.setText(self.name)
         self.run_btn.setToolTip(f"{self.lang["run"]} {self.name}")
@@ -306,6 +334,18 @@ class ModWidget(QWidget):
                 self.config.write(file)
                 
             self.update_ui()
+            
+    def fav_toggle(self):
+        fav = self.config.getboolean("ModData", "fav")
+        if fav:
+            self.config.set("ModData", 'fav', 'False')
+        else:
+            self.config.set("ModData", "fav", "True")
+            
+        with open(os.path.join(self.folder, ".mod.ini"), 'w') as file:
+            self.config.write(file)
+            
+        self.update_ui()
         
 # settings!
 class SettingsWidget(QWidget):
@@ -625,9 +665,19 @@ class MainWindow(QMainWindow):
         mod_item_layout.addWidget(spacer1)
         
         new_label = QLabel()
-        if mod_data["new"]: new_label.setPixmap(QPixmap("assets/new.svg").scaled(12, 12))
+        new_label.setPixmap(QPixmap("assets/new.svg").scaled(12, 12))
         new_label.setMaximumWidth(32)
         mod_item_layout.addWidget(new_label)
+        if mod_data['new']: new_label.show()
+        else: new_label.hide()
+        
+        fav_label = QLabel()
+        fav_label.setPixmap(QPixmap("assets/fav.svg").scaled(24, 24))
+        fav_label.setMaximumWidth(32)
+        mod_item_layout.addWidget(fav_label)
+        if mod_data['fav']: fav_label.show()
+        else: fav_label.hide()
+        
 
         mod_list_item = QListWidgetItem()
         mod_list_item.setSizeHint(mod_item_widget.sizeHint())
@@ -656,6 +706,8 @@ class MainWindow(QMainWindow):
 
     # another function connected with loading mods
     def loading_complete(self):
+        
+        
         self.loading_label.setVisible(False)
             
     # shows information    
@@ -666,15 +718,13 @@ class MainWindow(QMainWindow):
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     # no deleting files it makes so settings come back once deleted :>
-    if fp.settings("settings.json"):
-        QMessageBox.warning(None, "Settings", "Settings file has been deleted, but do not worry\nNew settings file has been created!")
+    fp.settings("settings.json")
 
     with open("settings.json", "r") as file:
         settings = json.load(file)
 
     # same thing here but for language
-    if fp.language("lang.json"):
-        QMessageBox.warning(None, "Settings", "Language file has been deleted, but do not worry\nNew language file has been created!")
+    fp.language("lang.json")
         
     with open("lang.json", "r", encoding="utf-8") as file:
         transl = json.load(file)

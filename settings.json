@@ -1,5 +1,5 @@
 {
-    "file_ver": "2.0-beta",
+    "file_ver": "2.0.1-beta",
     "default": {
         "engine": "engine",
         "engine_exe": "engine/PsychEngine.exe",

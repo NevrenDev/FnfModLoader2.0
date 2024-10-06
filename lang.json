@@ -1,5 +1,5 @@
 {
-    "file_ver": "2.0-beta",
+    "file_ver": "2.0.1-beta",
     "EN": {
         "mod": {
             "run": "Run",
@@ -13,6 +13,10 @@
             "link": "Gamebanana/Gamejolt link",
             "save": "Save changes",
             "newb": "Uncheck recently added",
+            "fav": [
+                "Add to favourites",
+                "Remove from favourites"
+            ],
             "sf": {
                 "war": [
                     "No mod name",
@@ -85,6 +89,10 @@
             "link": "Link do Gamebanana/Gamejolt",
             "save": "Zapisz zmiany",
             "newb": "Odznacz ostatnio dodany",
+            "fav": [
+                "Dodaj do ulubionych",
+                "Usuń z ulubionych"
+            ],
             "sf": {
                 "war": [
                     "Brak nazwy moda",
