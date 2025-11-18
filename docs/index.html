@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://nevrendev.github.io/style.css">
+    <link rel="shortcut icon" href="https://nevrendev.github.io/favicon.png" type="image/x-icon">
+    <title>FnfModLoader 2.0 | NevrenDev</title>
+</head>
+<body>
+    <div class="app">
+        <header>
+            <div class="logo">&gt; <strong>NevrenDev</strong><button onclick="go('https:/\/nevrendev.github.io')" style="margin-left: 15px;">Home Page</button></div>
+            <div class="nav">
+                <button onclick="go('#intro')">About</button>
+                <button onclick="go('#progress')">Progress</button>
+            </div>
+            <div style="display:flex;gap:12px;align-items:center;">
+                <button class="theme-toggle" id="themeToggle" onclick="theme()">Theme: Light</button>
+            </div>
+        </header>
+        <main class="h-scroll" id="hScroll">
+            <section class="section intro" id="intro">
+                <div class="panel">
+                    <div id="introBox">
+                        <div class="avatar" aria-hidden="true">
+                            <div class="icon" style="background-image: url('../assets/icon.ico');background-size: 75%;"></div>
+                        </div>
+                        <div>
+                            <div class="title">> FnF Mod Loader 2.0</div>
+                            <p style="opacity:0.9;margin-top:8px;">More advanced version of the original FnF Mod Loader. <br>
+                            It has refreshed UI and more features which you can find in progress section or on the repo. <br>
+                            You can go to the repo <button onclick="go('https:/\/github.com/NevrenDev/FnFModLoader2.0')">here</button></p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section class="section progress" id="progress">
+                <div class="panel">
+                    <h2>Progress and updates</h2>
+                    <hr>
+                    <h3>Progress</h3>
+                    <label>
+                        Paused Development
+                        <progress max="100" value="70"></progress>
+                    </label>
+                    <br><br>
+                    <h3>Updates</h3>
+                    <ul>
+                        V 2.0.1-beta
+                        <li>Added favourite mod system. Favourited mod will appear on top of the list</li>
+                        <li>Added version control for mod data, settings and language files <br>
+                        (But deleting existing lines will still brake the program)</li>
+                    </ul>
+                    <ul>
+                        V 2.0-beta
+                        <li>Official beta release. Most functions are available but more will come</li>
+                    </ul>
+                </div>
+            </section>
+        </main>
+
+        <footer title="and ChatGPT*">
+            © 2025 NevrenDev • built with 🧋 and pain
+        </footer>
+    </div>
+    <script src="https://nevrendev.github.io/script.js"></script>
+</body>
+</html>
